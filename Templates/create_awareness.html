@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Create Awareness Campaign{% endblock %}
+{% block content %}
+<div class="container mt-4">
+  <h2>Create Awareness Campaign</h2>
+  <form method="POST">
+    <div class="mb-3">
+      <label class="form-label">Title</label>
+      <input type="text" name="title" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Description</label>
+      <textarea name="description" rows="5" class="form-control" required></textarea>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Location / City</label>
+      <input type="text" name="location" class="form-control" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Publish Campaign</button>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}User profile{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-7 col-sm-10">
+    <h2 class="mb-4 text-center">Complete Your Profile</h2>
+    <form method="POST" novalidate>
+      <div class="mb-3">
+        <label for="full_name" class="form-label">Full Name</label>
+        <input type="text" name="full_name" id="full_name" class="form-control" required />
+      </div>
+      <div class="mb-3">
+        <label for="nickname" class="form-label">Nickname</label>
+        <input type="text" name="nickname" id="nickname" class="form-control" />
+      </div>
+      <div class="mb-3">
+        <label for="age" class="form-label">Age</label>
+        <input type="number" name="age" id="age" class="form-control" min="1" max="120" required />
+      </div>
+      <div class="mb-3">
+        <label for="dob" class="form-label">Date of Birth</label>
+        <input type="date" name="dob" id="dob" class="form-control" required />
+      </div>
+      <div class="mb-3">
+        <label for="address" class="form-label">Address</label>
+        <textarea name="address" id="address" class="form-control" rows="2" required></textarea>
+      </div>
+      <div class="mb-3">
+        <label for="pin_code" class="form-label">Pin Code</label>
+        <input type="text" name="pin_code" id="pin_code" class="form-control" required />
+      </div>
+      <div class="mb-3">
+        <label for="phone" class="form-label">Phone Number</label>
+        <input type="tel" name="phone" id="phone" class="form-control" required />
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label">Do you have a pet?</label>
+        <select name="have_pet" class="form-select" required>
+          <option value="" selected disabled>Select</option>
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100">Submit</button>
+    </form>
+  </div>
+</div>
+{% endblock %}
