@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+{% block title %}NGO Profile{% endblock %}
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb my-3">
+    <li class="breadcrumb-item"><a href="{{ url_for('about') }}" style="color: #111;">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">NGO Profile</li>
+  </ol>
+</nav>
+{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8 col-sm-10">
+    <h2 class="mb-4 text-center">Complete Your NGO Profile</h2>
+    <form method="POST" novalidate>
+      <div class="mb-3">
+        <label for="ngo_name" class="form-label">NGO Name</label>
+        <input
+          type="text"
+          name="ngo_name"
+          id="ngo_name"
+          class="form-control"
+          value="{{ ngo.ngo_name or '' }}"
+          required
+        />
+      </div>
+      <div class="mb-3">
+        <label for="ngo_established" class="form-label">Established (Year)</label>
+        <input
+          type="text"
+          name="ngo_established"
+          id="ngo_established"
+          class="form-control"
+          value="{{ ngo.ngo_established or '' }}"
+          required
+        />
+      </div>
+      <!--<div class="mb-3">
+        <label for="ngo_occupancy" class="form-label">Occupancy (Number of Animals)</label>
+        <input
+          type="number"
+          name="ngo_occupancy"
+          id="ngo_occupancy"
+          class="form-control"
+          value="{{ ngo.ngo_occupancy or '' }}"
+          required
+        />
+      </div>-->
+      <div class="mb-3">
+        <label for="address" class="form-label">Address</label>
+        <textarea
+          name="address"
+          id="address"
+          class="form-control"
+          rows="2"
+          required>{{ ngo.address or '' }}</textarea>
+      </div>
+      <div class="mb-3">
+        <label for="pin_code" class="form-label">Pin Code</label>
+        <input
+          type="text"
+          name="pin_code"
+          id="pin_code"
+          class="form-control"
+          value="{{ ngo.pin_code or '' }}"
+          required
+        />
+      </div>
+      <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input
+          type="email"
+          name="email"
+          id="email"
+          class="form-control"
+          value="{{ ngo.email or '' }}"
+          required
+        />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">NGO Contact Phone</label>
+        <div class="d-flex">
+          <select name="ngo_country_code" class="form-select me-2" required>
+            <option value="+49" selected>Germany (+49)</option>
+            <option value="+91">India (+91)</option>
+            <option value="+1">USA (+1)</option>
+            <option value="+44">UK (+44)</option>
+          </select>
+          <input
+            type="tel"
+            name="ngo_contact"
+            id="ngo_contact"
+            class="form-control"
+            value="{{ ngo.ngo_contact or '' }}"
+            required
+            placeholder="Phone number"
+            pattern="\d{7,15}"
+          />
+        </div>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Types of Animals Supported</label>
+        <div id="animal-types-group">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="ngo_types_animals" id="companion_animals" value="Companion Animals:" {% if 'Companion Animals:' in (ngo.ngo_types_animals or '') %}checked{% endif %}>
+            <label class="form-check-label" for="companion_animals">1. Companion Animals:</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="ngo_types_animals" id="farmed_animals" value="Farmed Animals:" {% if 'Farmed Animals:' in (ngo.ngo_types_animals or '') %}checked{% endif %}>
+            <label class="form-check-label" for="farmed_animals">2. Farmed Animals:</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="ngo_types_animals" id="wild_animals" value="Wild Animals:" {% if 'Wild Animals:' in (ngo.ngo_types_animals or '') %}checked{% endif %}>
+            <label class="form-check-label" for="wild_animals">3. Wild Animals:</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="ngo_types_animals" id="general_animal_welfare" value="General Animal Welfare:" {% if 'General Animal Welfare:' in (ngo.ngo_types_animals or '') %}checked{% endif %}>
+            <label class="form-check-label" for="general_animal_welfare">4. General Animal Welfare:</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="ngo_types_animals" id="other_animals" value="Other" {% if 'Other' in (ngo.ngo_types_animals or '') %}checked{% endif %}>
+            <label class="form-check-label" for="other_animals">5. Other</label>
+          </div>
+          <div class="mt-2" id="other-animals-specify" style="display: none;">
+            <input type="text" name="ngo_types_animals_other" class="form-control" placeholder="Please specify" value="{% if 'Other:' in (ngo.ngo_types_animals or '') %}{{ ngo.ngo_types_animals.split('Other:')[-1].strip() }}{% endif %}">
+          </div>
+        </div>
+      </div>
+      <script>
+        function toggleOtherAnimalsBox() {
+          var otherCheckbox = document.getElementById('other_animals');
+          var otherBox = document.getElementById('other-animals-specify');
+          if (otherCheckbox.checked) {
+            otherBox.style.display = 'block';
+          } else {
+            otherBox.style.display = 'none';
+          }
+        }
+        document.getElementById('other_animals').addEventListener('change', toggleOtherAnimalsBox);
+        // On page load
+        toggleOtherAnimalsBox();
+      </script>
+      <button type="submit" class=" btn-primary">Save NGO Profile</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

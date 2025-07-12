@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}Login{% endblock %}
+
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb my-3">
+    <li class="breadcrumb-item"><a href="{{ url_for('about') }}" style="color: #111;">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Login</li>
+  </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+      <div class="card shadow-lg border-0 rounded-4 bg-white">
+        <div class="card-body p-4">
+          <h2 class="card-title text-center text-success mb-4 fw-bold">Login</h2>
+          <form method="POST" class="auth-form" novalidate>
+            <div class="mb-3">
+              <label for="login_as" class="form-label">Login as</label>
+              <select name="login_as" id="login_as" class="form-select rounded-3" required>
+                <option value="" selected disabled>Select user type</option>
+                <option value="user">User</option>
+                <option value="ngo">NGO</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="username" class="form-label">Username</label>
+              <input type="text" name="username" id="username" class="form-control rounded-3" required>
+            </div>
+            <div class="mb-3 position-relative">
+              <label for="password" class="form-label">Password</label>
+              <div class="input-group">
+                <input type="password" name="password" id="password" class="form-control rounded-3" required>
+                <span class="input-group-text password-toggle" onclick="togglePassword('password')" style="background: none; border: none; cursor: pointer;">
+                  <img src="{{ url_for('static', filename='images/eye_10610531.png') }}" alt="Show Password" style="height: 22px; width: 22px; vertical-align: middle; cursor: pointer;"/>
+                </span>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-success w-100 rounded-pill btn-lg mt-3">Login</button>
+          </form>
+          <div class="register-section text-center mt-4">
+            <p class="mb-2">Don't have an account?</p>
+            <a href="{{ url_for('register') }}" class="btn btn-outline-success rounded-pill">Register</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function togglePassword(id) {
+  const input = document.getElementById(id);
+  input.type = input.type === "password" ? "text" : "password";
+}
+</script>
+{% endblock %}

@@ -1,0 +1,198 @@
+{% extends 'base.html' %}
+{% block title %}Create Pet Profile{% endblock %}
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb my-3">
+    <li class="breadcrumb-item"><a href="{{ url_for('about') }}" style="color: #111;">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Pet Profile</li>
+  </ol>
+</nav>
+{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-7 col-sm-10">
+      <div class="card shadow-lg border-0 rounded-4 bg-white">
+        <div class="card-body p-4">
+          <h2 class="mb-4 text-center text-success fw-bold">Add Animal Profile</h2>
+          <form method="POST" enctype="multipart/form-data" id="petProfileForm" novalidate>
+            <div class="mb-3">
+              <label for="type" class="form-label">Type <span class="text-danger">*</span></label>
+              <select name="type" id="type" class="form-select rounded-3" required>
+                <option value="" selected disabled>Select Type</option>
+                <option value="Dog">Dog</option>
+                <option value="Cat">Cat</option>
+                <option value="Bird">Bird</option>
+                <option value="Other">Other</option>
+              </select>
+              <div class="invalid-feedback" id="typeError"></div>
+            </div>
+            <div class="mb-3">
+              <label for="name" class="form-label">Animal Name <span class="text-danger">*</span></label>
+              <input type="text" name="name" id="name" class="form-control rounded-3" required />
+              <div class="invalid-feedback" id="nameError"></div>
+            </div>
+            <div class="mb-3">
+              <label for="pet_image" class="form-label">Upload Image</label>
+              <input type="file" name="pet_image" id="pet_image" class="form-control rounded-3" accept="image/*" />
+            </div>
+            <div class="mb-3">
+              <label for="breed" class="form-label">Breed <span class="text-danger">*</span></label>
+              <input type="text" name="breed" id="breed" class="form-control rounded-3" required />
+              <div class="invalid-feedback" id="breedError"></div>
+            </div>
+            <div class="mb-3">
+              <label for="gender" class="form-label">Gender <span class="text-danger">*</span></label>
+              <select name="gender" id="gender" class="form-select rounded-3" required>
+                <option value="" selected disabled>Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+              <div class="invalid-feedback" id="genderError"></div>
+            </div>
+            <div class="mb-3">
+              <label for="dob" class="form-label">Date of Birth</label>
+              <input type="date" name="dob" id="dob" class="form-control rounded-3" />
+            </div>
+            <div class="mb-3">
+              <label for="age" class="form-label">Age (Years)</label>
+              <input type="number" name="age" id="age" class="form-control rounded-3" min="0" />
+            </div>
+            <div class="mb-3">
+              <label for="height" class="form-label">Height <span class="text-danger">*</span></label>
+              <div class="d-flex">
+                <input type="number" step="any" name="height" id="height" class="form-control rounded-3 me-2" placeholder="Enter height" required />
+                <select name="height_unit" class="form-select rounded-3" style="max-width: 100px;">
+                  <option value="cm">cm</option>
+                  <option value="foot">foot</option>
+                  <option value="inch">inch</option>
+                </select>
+              </div>
+              <div class="invalid-feedback" id="heightError"></div>
+            </div>
+            <div class="mb-3">
+              <label for="weight" class="form-label">Weight <span class="text-danger">*</span></label>
+              <div class="d-flex">
+                <input type="number" step="any" name="weight" id="weight" class="form-control rounded-3 me-2" placeholder="Enter weight" required />
+                <select name="weight_unit" class="form-select rounded-3" style="max-width: 100px;">
+                  <option value="kg">kg</option>
+                  <option value="lbs">lbs</option>
+                </select>
+              </div>
+              <div class="invalid-feedback" id="weightError"></div>
+            </div>
+            <div class="mb-3">
+              <label for="color" class="form-label">Color <span class="text-danger">*</span></label>
+              <input type="text" name="color" id="color" class="form-control rounded-3" required />
+              <div class="invalid-feedback" id="colorError"></div>
+            </div>
+            <div class="mb-3">
+              <label for="special_mark" class="form-label">Special Mark</label>
+              <input type="text" name="special_mark" id="special_mark" class="form-control rounded-3" />
+            </div>
+            <div class="mb-3">
+              <label for="vaccination" class="form-label">Vaccination <span class="text-danger">*</span></label>
+              <select name="vaccination" id="vaccination" class="form-select rounded-3" required>
+                <option value="" selected disabled>Select Vaccination</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+              <div class="invalid-feedback" id="vaccinationError"></div>
+            </div>
+            <button type="submit" class="btn btn-success w-100 rounded-pill fw-bold">Save Profile</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+    document.getElementById('petProfileForm').addEventListener('submit', function(e) {
+      let valid = true;
+      // Helper regex
+      const lettersOnly = /^[A-Za-z ]+$/;
+      // Type
+      const type = document.getElementById('type');
+      if (!type.value || !lettersOnly.test(type.options[type.selectedIndex].text)) {
+        document.getElementById('typeError').innerText = 'Please select a valid animal type (letters only).';
+        type.classList.add('is-invalid');
+        valid = false;
+      } else {
+        document.getElementById('typeError').innerText = '';
+        type.classList.remove('is-invalid');
+      }
+      // Name
+      const name = document.getElementById('name');
+      if (!name.value.trim() || !lettersOnly.test(name.value.trim())) {
+        document.getElementById('nameError').innerText = 'Please enter a valid name (letters only).';
+        name.classList.add('is-invalid');
+        valid = false;
+      } else {
+        document.getElementById('nameError').innerText = '';
+        name.classList.remove('is-invalid');
+      }
+      // Gender
+      const gender = document.getElementById('gender');
+      if (!gender.value) {
+        document.getElementById('genderError').innerText = 'Please select gender.';
+        gender.classList.add('is-invalid');
+        valid = false;
+      } else {
+        document.getElementById('genderError').innerText = '';
+        gender.classList.remove('is-invalid');
+      }
+      // Breed
+      const breed = document.getElementById('breed');
+      if (!breed.value.trim() || !lettersOnly.test(breed.value.trim())) {
+        document.getElementById('breedError').innerText = 'Please enter a valid breed (letters only).';
+        breed.classList.add('is-invalid');
+        valid = false;
+      } else {
+        document.getElementById('breedError').innerText = '';
+        breed.classList.remove('is-invalid');
+      }
+      // Height
+      const height = document.getElementById('height');
+      if (!height.value || isNaN(height.value) || Number(height.value) <= 0) {
+        document.getElementById('heightError').innerText = 'Please enter a valid height (number only).';
+        height.classList.add('is-invalid');
+        valid = false;
+      } else {
+        document.getElementById('heightError').innerText = '';
+        height.classList.remove('is-invalid');
+      }
+      // Weight
+      const weight = document.getElementById('weight');
+      if (!weight.value || isNaN(weight.value) || Number(weight.value) <= 0) {
+        document.getElementById('weightError').innerText = 'Please enter a valid weight (number only).';
+        weight.classList.add('is-invalid');
+        valid = false;
+      } else {
+        document.getElementById('weightError').innerText = '';
+        weight.classList.remove('is-invalid');
+      }
+      // Color
+      const color = document.getElementById('color');
+      if (!color.value.trim() || !lettersOnly.test(color.value.trim())) {
+        document.getElementById('colorError').innerText = 'Please enter a valid color (letters only).';
+        color.classList.add('is-invalid');
+        valid = false;
+      } else {
+        document.getElementById('colorError').innerText = '';
+        color.classList.remove('is-invalid');
+      }
+      // Vaccination
+      const vaccination = document.getElementById('vaccination');
+      if (!vaccination.value) {
+        document.getElementById('vaccinationError').innerText = 'Please select vaccination status.';
+        vaccination.classList.add('is-invalid');
+        valid = false;
+      } else {
+        document.getElementById('vaccinationError').innerText = '';
+        vaccination.classList.remove('is-invalid');
+      }
+      if (!valid) e.preventDefault();
+    });
+    </script>
+{% endblock %}

@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% block title %}Register{% endblock %}
+
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb my-3">
+    <li class="breadcrumb-item"><a href="{{ url_for('about') }}" style="color: #111;">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Register</li>
+  </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+      <div class="card shadow-lg border-0 rounded-4 bg-white">
+        <div class="card-body p-4">
+          <h2 class="card-title text-center text-success mb-4 fw-bold">Register</h2>
+          <form method="POST" class="auth-form" id="registerForm" novalidate>
+            <div class="mb-3">
+              <label for="login_as" class="form-label">Register as</label>
+              <select name="login_as" id="login_as" class="form-select rounded-3" required>
+                <option value="" selected disabled>Select user type</option>
+                <option value="user">User</option>
+                <option value="ngo">NGO</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="username" class="form-label">Username</label>
+              <input type="text" name="username" id="username" class="form-control rounded-3" required>
+            </div>
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input type="email" name="email" id="email" class="form-control rounded-3" required>
+              <div class="invalid-feedback text-danger" id="emailError"></div>
+            </div>
+            <div class="mb-3 position-relative">
+              <label for="password" class="form-label">Password</label>
+              <div class="input-group">
+                <input type="password" name="password" id="password" class="form-control rounded-3" required>
+                <span class="input-group-text password-toggle" onclick="togglePassword('password')" style="background: none; border: none; cursor: pointer;">
+                  <img src="{{ url_for('static', filename='images/eye_10610531.png') }}" alt="Show Password" style="height: 22px; width: 22px; vertical-align: middle; cursor: pointer;"/>
+                </span>
+              </div>
+              <div class="invalid-feedback text-danger" id="passwordError"></div>
+            </div>
+            <button type="submit" class="btn btn-success w-100 rounded-pill btn-lg mt-3">Register</button>
+          </form>
+          <div class="register-section text-center mt-4">
+            <p class="mb-2">Already have an account?</p>
+            <a href="{{ url_for('login') }}" class="btn btn-outline-success rounded-pill">Login</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function togglePassword(id) {
+  const input = document.getElementById(id);
+  input.type = input.type === "password" ? "text" : "password";
+}
+document.getElementById('registerForm').addEventListener('submit', function(e) {
+  let valid = true;
+  const email = document.getElementById('email');
+  const emailError = document.getElementById('emailError');
+  // Simple email regex
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!email.value.trim() || !emailPattern.test(email.value.trim())) {
+    emailError.innerText = 'Please enter a valid email address (e.g. xyz123@jabfk1213.faed12)';
+    email.classList.add('is-invalid');
+    valid = false;
+  } else {
+    emailError.innerText = '';
+    email.classList.remove('is-invalid');
+  }
+  // Password validation
+  const password = document.getElementById('password');
+  const passwordError = document.getElementById('passwordError');
+  // At least 8 chars, upper, lower, number, symbol, not common
+  const strongPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/;
+  const easyPatterns = [/password/i, /1234/, /qwerty/i, /letmein/i, /admin/i];
+  if (!password.value || !strongPattern.test(password.value) || easyPatterns.some(pat => pat.test(password.value))) {
+    passwordError.innerText = 'Password must be at least 8 characters, include upper and lower case letters, a number, a symbol, and not be a common/easy password.';
+    password.classList.add('is-invalid');
+    valid = false;
+  } else {
+    passwordError.innerText = '';
+    password.classList.remove('is-invalid');
+  }
+  if (!valid) e.preventDefault();
+});
+</script>
+{% endblock %}

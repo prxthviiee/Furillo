@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% block title %}Rescue Alert{% endblock %}
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb my-3">
+    <li class="breadcrumb-item"><a href="{{ url_for('about') }}" style="color: #111;">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Rescue Alert</li>
+  </ol>
+</nav>
+{% endblock %}
+{% block content %}
+{% if submitted %}
+  <div class="alert alert-success text-center fw-bold">Your rescue alert has been received! Our NGO team will reach you as soon as possible.</div>
+{% else %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-7">
+      <div class="card shadow-lg border-0 rounded-4 bg-white mb-4">
+        <div class="card-body p-4">
+          <h2 class="card-title text-success fw-bold mb-4 text-center">Report a Rescue Alert</h2>
+          <div id="map" style="height: 320px; border-radius: 16px; margin-bottom: 1.5rem;"></div>
+          <div id="location-info" class="text-muted mb-2" style="font-size: 0.95em;">Click on the map to auto-fill address.</div>
+          <form method="post" enctype="multipart/form-data">
+            <input type="hidden" id="latitude" name="latitude">
+            <input type="hidden" id="longitude" name="longitude">
+            <div class="mb-3">
+              <label for="location" class="form-label">Location</label>
+              <input type="text" class="form-control rounded-3" id="location" name="location" required value="{{ location or '' }}" autocomplete="off">
+            </div>
+            <div class="mb-3">
+              <label for="landmark" class="form-label">Landmark</label>
+              <input type="text" class="form-control rounded-3" id="landmark" name="landmark" required value="{{ landmark or '' }}">
+            </div>
+            <div class="mb-3">
+              <label for="animal_type" class="form-label">Animal Type</label>
+              <input type="text" class="form-control rounded-3" id="animal_type" name="animal_type" required value="{{ animal_type or '' }}">
+            </div>
+            <div class="mb-3">
+              <label for="wait_time" class="form-label">Wait Time (minutes)</label>
+              <input type="number" class="form-control rounded-3" id="wait_time" name="wait_time" min="1" required value="{{ wait_time or '' }}">
+            </div>
+            <div class="mb-3">
+              <label for="name" class="form-label">Your Name</label>
+              <input type="text" class="form-control rounded-3" id="name" name="name" required value="{{ name or '' }}">
+            </div>
+            <div class="mb-3">
+              <label for="contact" class="form-label">Contact Number</label>
+              <input type="text" class="form-control rounded-3" id="contact" name="contact" required value="{{ contact or '' }}">
+            </div>
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="checkbox" id="confirm_location" name="confirm_location" required>
+              <label class="form-check-label" for="confirm_location">I confirm the location is correct</label>
+            </div>
+            <button type="submit" class="btn btn-success w-100 rounded-pill btn-lg mt-2">Send Rescue Alert</button>
+          </form>
+        </div>
+      </div>
+      {% if rescue_alerts %}
+      <div class="card shadow-lg border-0 rounded-4 bg-white">
+        <div class="card-body p-4">
+          <h3 class="card-title text-success fw-bold mb-3 text-center">Recent Rescue Alerts</h3>
+          <div class="list-group list-group-flush">
+            {% for alert in rescue_alerts %}
+              <div class="list-group-item bg-transparent border-0 mb-2 p-0">
+                <div class="card shadow-sm border-0 rounded-3 mb-2">
+                  <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                      <div class="fw-bold text-success">{{ alert.animal_type }}</div>
+                      <span class="badge bg-success">{{ alert.status }}</span>
+                    </div>
+                    <div class="mb-1"><strong>Location:</strong> {{ alert.location }}</div>
+                    <div class="mb-1"><strong>Landmark:</strong> {{ alert.landmark }}</div>
+                    <div class="mb-1"><strong>Wait Time:</strong> {{ alert.wait_time }} min</div>
+                    <div class="mb-1"><strong>Reported by:</strong> {{ alert.name }} ({{ alert.contact }})</div>
+                    <a href="{{ url_for('rescue_conversation', alert_id=alert.id) }}" class="btn btn-outline-success btn-sm rounded-pill mt-2">View Conversation</a>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script>
+window.onload = function() {
+  var map = L.map('map').setView([20.5937, 78.9629], 5); // Default: India
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '© OpenStreetMap'
+  }).addTo(map);
+  var marker;
+  function setMarker(lat, lng) {
+    if (marker) map.removeLayer(marker);
+    marker = L.marker([lat, lng]).addTo(map);
+    document.getElementById('latitude').value = lat;
+    document.getElementById('longitude').value = lng;
+    fetchAddress(lat, lng);
+  }
+  function fetchAddress(lat, lng) {
+    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
+      .then(response => response.json())
+      .then(data => {
+        var address = '';
+        if (data.address) {
+          address = [
+            data.address.road || data.address.pedestrian || data.address.cycleway || '',
+            data.address.suburb || data.address.village || data.address.town || data.address.city_district || '',
+            data.address.city || data.address.town || data.address.village || '',
+            data.address.state || '',
+            data.address.postcode || ''
+          ].filter(Boolean).join(', ');
+        }
+        if (!address) address = data.display_name || 'Unknown location';
+        document.getElementById('location').value = address;
+      })
+      .catch(() => {
+        document.getElementById('location').value = 'Could not fetch address.';
+      });
+  }
+  map.on('click', function(e) {
+    setMarker(e.latlng.lat, e.latlng.lng);
+    document.getElementById('location-info').innerText = 'Location selected on map.';
+  });
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      map.setView([position.coords.latitude, position.coords.longitude], 15);
+      setMarker(position.coords.latitude, position.coords.longitude);
+      document.getElementById('location-info').innerText = 'Location auto-filled using your device.';
+    }, function() {
+      document.getElementById('location-info').innerText = 'Could not auto-detect location. Please select on map.';
+    });
+  }
+};
+</script>
+{% endif %}
+{% endblock %} 

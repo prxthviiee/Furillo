@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% block title %}Publish Campaign{% endblock %}
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb my-3">
+    <li class="breadcrumb-item"><a href="{{ url_for('about') }}" style="color: #111;">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Publish Campaign</li>
+  </ol>
+</nav>
+{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow-lg border-0 rounded-4 bg-white">
+        <div class="card-body p-4">
+          <h2 class="card-title text-center mb-4 text-success fw-bold">Create a New Campaign</h2>
+          <form method="post" enctype="multipart/form-data">
+            <div class="mb-3">
+              <label for="title" class="form-label">Campaign Title</label>
+              <input type="text" class="form-control form-control-lg rounded-3" id="title" name="title" required maxlength="200">
+            </div>
+            <div class="mb-3">
+              <label for="description" class="form-label">Description</label>
+              <textarea class="form-control form-control-lg rounded-3" id="description" name="description" rows="5" required></textarea>
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="start_date" class="form-label">Start Date</label>
+                <input type="date" class="form-control form-control-lg rounded-3" id="start_date" name="start_date" required onchange="calculateDuration()">
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="end_date" class="form-label">End Date</label>
+                <input type="date" class="form-control form-control-lg rounded-3" id="end_date" name="end_date" required onchange="calculateDuration()">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="duration" class="form-label">Duration (days)</label>
+                <input type="text" class="form-control form-control-lg rounded-3" id="duration" name="duration" readonly style="background-color: #f8f9fa;">
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="capacity" class="form-label">Capacity</label>
+                <input type="number" class="form-control form-control-lg rounded-3" id="capacity" name="capacity" min="1" placeholder="Enter capacity">
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="image_file" class="form-label">Upload Image (optional)</label>
+              <input type="file" class="form-control rounded-3" id="image_file" name="image_file" accept="image/*" onchange="previewImage(event)">
+            </div>
+            <div class="mb-3 text-center">
+              {% if image_url %}
+                <img id="preview" src="{{ image_url }}" alt="Preview" style="max-width: 100%; max-height: 250px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              {% else %}
+                <img id="preview" src="#" alt="Preview" style="display:none; max-width: 100%; max-height: 250px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              {% endif %}
+            </div>
+            <button type="submit" class="btn btn-success w-100 rounded-pill btn-lg mt-3">Publish Campaign</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+function previewImage(event) {
+  var preview = document.getElementById('preview');
+  var file = event.target.files[0];
+  if (file) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      preview.src = e.target.result;
+      preview.style.display = 'block';
+    }
+    reader.readAsDataURL(file);
+  } else {
+    preview.src = '#';
+    preview.style.display = 'none';
+  }
+}
+
+function calculateDuration() {
+  var startDate = document.getElementById('start_date').value;
+  var endDate = document.getElementById('end_date').value;
+  var durationField = document.getElementById('duration');
+  
+  if (startDate && endDate) {
+    var start = new Date(startDate);
+    var end = new Date(endDate);
+    
+    if (end >= start) {
+      var diffTime = Math.abs(end - start);
+      var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+      durationField.value = diffDays + ' days';
+    } else {
+      durationField.value = 'Invalid date range';
+    }
+  } else {
+    durationField.value = '';
+  }
+}
+</script>
+{% endblock %} 

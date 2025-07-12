@@ -1,5 +1,13 @@
 {% extends 'base.html' %}
 {% block title %}Create Awareness Campaign{% endblock %}
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb my-3">
+    <li class="breadcrumb-item"><a href="{{ url_for('about') }}" style="color: #111;">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Create Awareness</li>
+  </ol>
+</nav>
+{% endblock %}
 {% block content %}
 <div class="container mt-4">
   <h2>Create Awareness Campaign</h2>
@@ -16,7 +24,7 @@
       <label class="form-label">Location / City</label>
       <input type="text" name="location" class="form-control" required>
     </div>
-    <button type="submit" class="btn btn-primary">Publish Campaign</button>
+    <button type="submit" class="btn-primary">Publish Campaign</button>
   </form>
 </div>
 {% endblock %}

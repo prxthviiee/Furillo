@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block title %}Adopt a Pet{% endblock %}
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb my-3">
+    <li class="breadcrumb-item"><a href="{{ url_for('about') }}" style="color: #111;">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Adoption Posts</li>
+  </ol>
+</nav>
+{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <h2 class="display-5 fw-bold text-success mb-4 text-center">Adopt a Pet</h2>
+  <form method="get" id="ngo-select-form">
+    <label for="ngo-select"><strong>Select NGO:</strong></label>
+    <select id="ngo-select" name="ngo_id" onchange="document.getElementById('ngo-select-form').submit();">
+      <option value="">All NGOs</option>
+      {% for ngo in ngos %}
+        <option value="{{ ngo.id }}" {% if selected_ngo_id == ngo.id %}selected{% endif %}>{{ ngo.ngo_name or ngo.username }}</option>
+      {% endfor %}
+    </select>
+  </form>
+  <div class="card-grid mt-3">
+    <div class="row g-4">
+      {% if selected_ngo_id %}
+        {% set selected_ngo = ngos|selectattr('id', 'equalto', selected_ngo_id)|first %}
+        {% set pets = ngo_pets[selected_ngo] if selected_ngo in ngo_pets else [] %}
+        {% if pets %}
+          {% for pet in pets %}
+            <div class="col-md-4 mb-3">
+              <div class="card shadow-sm border-0 rounded-4 h-100">
+                <div class="card-body text-center">
+                  <h3 class="card-title text-success">{{ pet.name }}</h3>
+                  <p class="mb-2"><strong>Breed:</strong> {{ pet.breed }}</p>
+                  <p class="mb-2"><strong>Age:</strong> {{ pet.age }}</p>
+                  <form method="post" action="{{ url_for('request_adoption', pet_id=pet.id) }}">
+                    <button class="btn btn-success w-100 rounded-pill mt-2" type="submit">Request Adoption</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <p class="text-muted">No pets available for adoption in this NGO.</p>
+        {% endif %}
+      {% else %}
+        {% for ngo, pets in ngo_pets.items() %}
+          {% for pet in pets %}
+            <div class="col-md-4 mb-3">
+              <div class="card shadow-sm border-0 rounded-4 h-100">
+                <div class="card-body text-center">
+                  <h3 class="card-title text-success">{{ pet.name }}</h3>
+                  <p class="mb-2"><strong>NGO:</strong> {{ ngo.ngo_name or ngo.username }}</p>
+                  <p class="mb-2"><strong>Breed:</strong> {{ pet.breed }}</p>
+                  <p class="mb-2"><strong>Age:</strong> {{ pet.age }}</p>
+                  <form method="post" action="{{ url_for('request_adoption', pet_id=pet.id) }}">
+                    <button class="btn btn-success w-100 rounded-pill mt-2" type="submit">Request Adoption</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        {% endfor %}
+        {% if ngo_pets|length == 0 %}
+          <p class="text-muted">No pets available for adoption at this time.</p>
+        {% endif %}
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

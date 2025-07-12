@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block title %}Report Lost Pet{% endblock %}
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb my-3">
+    <li class="breadcrumb-item"><a href="{{ url_for('about') }}" style="color: #111;">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Report Lost Pet</li>
+  </ol>
+</nav>
+{% endblock %}
+{% block content %}
+<div class="container mt-4">
+  <h2>Report Lost Pet</h2>
+  <form method="POST">
+    <div class="mb-3">
+      <label class="form-label">Is your pet lost?</label>
+      <select id="pet_select" name="pet_select" class="form-control">
+        <option value="">-- Select your pet --</option>
+        {% for pet in pets %}
+          <option value="{{ pet.name }}">{{ pet.name }}</option>
+        {% endfor %}
+        <option value="other">Report a different lost pet</option>
+      </select>
+    </div>
+    <div class="mb-3" id="pet_name_group">
+      <label class="form-label">Pet Name</label>
+      <input type="text" name="name" id="pet_name_input" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Last Seen Location</label>
+      <input type="text" name="location" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Date Lost</label>
+      <input type="date" name="date_lost" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Description</label>
+      <textarea name="description" rows="4" class="form-control"></textarea>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Select NGO</label>
+      <select name="ngo_id" class="form-control" required>
+        <option value="">-- Select an NGO --</option>
+        {% for ngo in ngos %}
+          <option value="{{ ngo.id }}">{{ ngo.ngo_name or ngo.username }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <button type="submit" class="btn-primary">Submit Report</button>
+  </form>
+  <script>
+    const petSelect = document.getElementById('pet_select');
+    const petNameInput = document.getElementById('pet_name_input');
+    petSelect && petSelect.addEventListener('change', function() {
+      if (this.value && this.value !== 'other') {
+        petNameInput.value = this.value;
+        petNameInput.readOnly = true;
+      } else {
+        petNameInput.value = '';
+        petNameInput.readOnly = false;
+      }
+    });
+  </script>
+</div>
+{% endblock %}
