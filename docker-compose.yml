@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  furillo-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+    volumes:
+      # Mount the entire app directory for development
+      - .:/app
+      # Preserve the SQLite database
+      - ./instance:/app/instance
+      # Exclude node_modules if any (for consistency)
+      - /app/__pycache__
+    environment:
+      - FLASK_APP=app.py
+      - FLASK_ENV=development
+      - FLASK_DEBUG=1
+    networks:
+      - furillo-network
+    restart: unless-stopped
+
+networks:
+  furillo-network:
+    driver: bridge 
