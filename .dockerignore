@@ -63,6 +63,9 @@ docs/
 *.md
 !README.md
 
+# Keep templates directory
+!templates/
+
 # Logs
 *.log
 
