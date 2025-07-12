@@ -347,52 +347,6 @@ The test suite covers:
 For detailed testing information, see [TEST_README.md](TEST_README.md).
 
 ## 🚀 Deployment
-
-### Production Setup
-
-1. **Environment Configuration**
-   ```bash
-   export FLASK_ENV=production
-   export SECRET_KEY=your_production_secret_key
-   export DATABASE_URL=postgresql://user:pass@localhost/furillo
-   ```
-
-2. **Database Setup**
-   ```bash
-   # Install PostgreSQL
-   sudo apt-get install postgresql postgresql-contrib
-   
-   # Create database
-   createdb furillo
-   ```
-
-3. **Web Server Setup**
-   ```bash
-   # Install Gunicorn
-   pip install gunicorn
-   
-   # Run with Gunicorn
-   gunicorn -w 4 -b 0.0.0.0:8000 app:app
-   ```
-
-4. **Nginx Configuration**
-   ```nginx
-   server {
-       listen 80;
-       server_name your-domain.com;
-       
-       location / {
-           proxy_pass http://127.0.0.1:8000;
-           proxy_set_header Host $host;
-           proxy_set_header X-Real-IP $remote_addr;
-       }
-       
-       location /static {
-           alias /path/to/your/app/static;
-       }
-   }
-   ```
-
 ### Docker Deployment
 
 ```dockerfile
