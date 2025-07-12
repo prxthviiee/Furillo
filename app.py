@@ -910,4 +910,4 @@ def handle_send_rescue_message(data):
     }, room='rescue_' + str(alert_id))
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True)
+    socketio.run(app, debug=True, allow_unsafe_werkzeug=True)
